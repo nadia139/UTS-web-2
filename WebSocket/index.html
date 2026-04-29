@@ -1,0 +1,56 @@
+<!-- index.html -->
+<!-- Eksperimen 1: Client WebSocket di browser -->
+
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <title>Belajar WebSocket</title>
+  <style>
+    body { font-family: Arial, sans-serif; padding: 20px; }
+    #log { border: 1px solid #ccc; padding: 10px;
+           height: 200px; overflow-y: auto; margin-bottom: 10px; }
+    input { width: 300px; padding: 5px; }
+    button { padding: 5px 15px; cursor: pointer; }
+  </style>
+</head>
+<body>
+  <h2>Uji WebSocket</h2>
+  <div id="log"></div>
+  <input id="inputPesan" type="text" placeholder="Ketik pesan di sini...">
+  <button onclick="kirim()">Kirim</button>
+
+  <script>
+    // Buat koneksi WebSocket ke server lokal
+    const ws = new WebSocket('ws://localhost:8080');
+
+    // Terpicu ketika koneksi berhasil dibuka
+    ws.onopen = function() {
+      tampilkan('>> Koneksi berhasil!');
+    };
+
+    // Terpicu setiap ada pesan dari server
+    ws.onmessage = function(event) {
+      tampilkan('[Server] ' + event.data);
+    };
+
+    // Terpicu kalau koneksi terputus
+    ws.onclose = function() {
+      tampilkan('>> Koneksi ditutup.');
+    };
+
+    function kirim() {
+      const input = document.getElementById('inputPesan');
+      ws.send(input.value);
+      tampilkan('[Kamu] ' + input.value);
+      input.value = '';
+    }
+
+    function tampilkan(teks) {
+      const log = document.getElementById('log');
+      log.innerHTML += '<p style="margin:4px 0">' + teks + '</p>';
+      log.scrollTop = log.scrollHeight;
+    }
+  </script>
+</body>
+</html>
